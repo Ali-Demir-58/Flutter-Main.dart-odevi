@@ -1,5 +1,5 @@
 
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 
@@ -9,12 +9,100 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp>{
+  
+  late Duration _timeUntilTarget;
+  
+  final PageController controller = PageController(initialPage: 0);
+  
+  int currentPage = 0;
+  
+  late Color dot1 = Color.fromRGBO(29, 78, 216, 1);
+  late Color dot2 = Colors.grey;
+  late Color dot3 = Colors.grey;
+  late Color dot4 = Colors.grey;
+  late Color dot5 = Colors.grey;
+  
+  int sayac = 0;
+
+  
+
+  @override
+  void initState() {
+    super.initState();
+
+    
+    DateTime targetDate = DateTime(2024, 1, 30, 11);
+
+    
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        int nextPage = (controller.page?.round() ?? 0) + 1;
+        if (nextPage > 4) {
+          nextPage = 0;
+        }
+        if (sayac == 8) {
+          controller.animateToPage(nextPage,
+              duration: Duration(milliseconds: 500), curve: Curves.ease);
+          sayac = 0;
+        }
+        sayac++;
+        _timeUntilTarget = targetDate.difference(DateTime.now());
+      });
+    });
+
+    //Hedef ana kalan sürenin hesaplandığı yer
+    _timeUntilTarget = targetDate.difference(DateTime.now());
+
+    // Sayfa değiştiği andaki işlemler
+    controller.addListener(() {
+      setState(() {
+        currentPage = controller.page?.round() ?? 0;
+        switch (currentPage) {
+          case 0:
+            dot1 = Color.fromRGBO(29, 78, 216, 1);
+            dot2 = Colors.grey;
+            dot3 = Colors.grey;
+            dot4 = Colors.grey;
+            dot5 = Colors.grey;
+          case 1:
+            dot1 = Colors.grey;
+            dot2 = Color.fromRGBO(29, 78, 216, 1);
+            dot3 = Colors.grey;
+            dot4 = Colors.grey;
+            dot5 = Colors.grey;
+          case 2:
+            dot1 = Colors.grey;
+            dot2 = Colors.grey;
+            dot3 = Color.fromRGBO(29, 78, 216, 1);
+            dot4 = Colors.grey;
+            dot5 = Colors.grey;
+          case 3:
+            dot1 = Colors.grey;
+            dot2 = Colors.grey;
+            dot3 = Colors.grey;
+            dot4 = Color.fromRGBO(29, 78, 216, 1);
+            dot5 = Colors.grey;
+          case 4:
+            dot1 = Colors.grey;
+            dot2 = Colors.grey;
+            dot3 = Colors.grey;
+            dot4 = Colors.grey;
+            dot5 = Color.fromRGBO(29, 78, 216, 1);
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    
+  String formattedTime = "${_timeUntilTarget.inDays} DAY ${_timeUntilTarget.inHours % 24} HRS ${_timeUntilTarget.inMinutes % 60} MIN ${_timeUntilTarget.inSeconds % 60} SEC";
 
     
 
@@ -159,12 +247,12 @@ class MyApp extends StatelessWidget {
                               
                               ),),]
                             ),
-                            
+                             SizedBox(width: 15,),
                       Column(
                           children: [  
                             Image.asset('assets/Furniture.png',height: 80,width: 80,),
                             const Text(
-                              "Fu",
+                              "Furniture",
                               style: TextStyle(
                               color: Color.fromARGB(198, 54, 54, 55),
                               fontSize: 12,
@@ -179,119 +267,86 @@ class MyApp extends StatelessWidget {
             
                 const SizedBox(height: 25,),
             
-                Row(
-                  children: [
-                    Container(
-                          color: const Color.fromARGB(255, 250, 206, 142),
-                          width: 231.42,
-                          height: 154,
-                          alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                             const Text(
-                              "MIN 15% OFF",
-                                style: TextStyle(
-                                color: Color.fromARGB(197, 0, 0, 0),
-                                fontSize: 34,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 2.88,
-                              ),
-                          
-                          
+                 Container(
+                  width: 360,
+                  height: 154,
+                  child: PageView(
+                    controller: controller,
+                    children: <Widget>[
+                      Center(
+                        child: Image.asset("assets/indirim.png"),
                       ),
-                            ElevatedButton(
-                              onPressed: (){},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:const Color.fromARGB(221, 205, 89, 11),
-                              ), 
-                              child: const Text(
-                                "SHOP NOW",
-                                style: TextStyle(
-                                color: Color.fromARGB(197, 0, 0, 0),
-                                fontSize: 15,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                letterSpacing: 2.88,
-                                ),
-                              )
+                      Center(
+                        child: Image.asset("assets/bilgisayar.png"),
                       ),
-                      ],
+                      Center(
+                        child: Image.asset("assets/takim elbise.png"),
                       ),
-                    ),
-                    Column(
-                      children: [
-                        Image.asset("assets/Shoes.png")
-                      ],
-                    ),
-                  ],
-                ),
-             const SizedBox(height: 15,),
-                 Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              
-              children: [
-                Container(
-                  width: 6,
-                  height: 6,
-                  padding:const EdgeInsets.all(15),
-                  decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blue,
+                      Center(
+                        child: Image.asset("assets/kadin-elbise.png"),
+                      ),
+                      Center(
+                        child: Image.asset("assets/cocuk-elbise.png"),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(width: 10),
-                Container(
-                  width: 6,
-                  height: 6,
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black12, // You can change the color as needed
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.circle,
+                          size: 6,
+                          color: dot1,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.circle,
+                          size: 6,
+                          color: dot2,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.circle,
+                          size: 6,
+                          color: dot3,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.circle,
+                          size: 6,
+                          color: dot4,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Icon(
+                          Icons.circle,
+                          size: 6,
+                          color: dot5,
+                        ),
+                      ),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
                   ),
                 ),
-                SizedBox(width: 10),
-                Container(
-                  width: 6,
-                  height: 6,
-                  padding: EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black12,
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 6,
-                  height: 6,
-                  padding: EdgeInsets.all(15),
-                  decoration:const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black12, // You can change the color as needed
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 6,
-                  height: 6,
-                  padding: EdgeInsets.all(15),
-                  decoration:const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.black12,
-                  ),
-                ),
-                
-              ],
-            ),
                 const SizedBox(height: 65,),
-               
+                
                 Container(
                       height: 600,
                       width: 400,
                       color: Color.fromARGB(255, 238, 238, 238),
                       child:  Stack(
-                    
+                 
                         children: [
                           Positioned(
                             top: 30,
@@ -303,9 +358,9 @@ class MyApp extends StatelessWidget {
                                 color: Colors.red, // Set the background color
                                 borderRadius: BorderRadius.circular(2), // Set the border radius
                               ),
-                              child: const Center(
+                              child:  Center(
                                 child:Text(
-                                  '11 HRS 15 MIN 04 SEC',
+                                  formattedTime,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
@@ -549,13 +604,14 @@ class MyApp extends StatelessWidget {
                                   
                                   Row(
                                     children: [
-                                         SizedBox(width: 20,),
+                                         
                                          Container(
                                           height: 150,
                                           width: 150,
                                           
-                                          child:const Column(
+                                          child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               Expanded(
                                                 child: Padding(
@@ -574,14 +630,37 @@ class MyApp extends StatelessWidget {
                                               Padding(
                                                 padding: EdgeInsets.only(bottom: 10),
                                                 
-                                                child: Text(
-                                                  "\$68 \$136 50% OFF",
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.normal,
-                                                  ),
-                                                ),
+                                                child: RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  TextSpan(
+                                                                    text: '\$75 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '\$90 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.grey, // Customize the color as needed
+                                                                      fontSize: 10,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      decoration: TextDecoration.lineThrough,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '20% OFF',
+                                                                    style: TextStyle(
+                                                                      color: Colors.orange, // Customize the color as needed
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
                                               ),
                                               Padding(
                                                 padding: EdgeInsets.only(bottom: 50),
@@ -612,12 +691,12 @@ class MyApp extends StatelessWidget {
                                         ),
                                       
 
-                                      SizedBox(width: 55,),
+                                      SizedBox(width: 75,),
                                        Container(
                                        height: 150,
                                        width: 150,
                                        
-                                       child:const Column(
+                                       child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Expanded(
@@ -637,14 +716,37 @@ class MyApp extends StatelessWidget {
                                                   Padding(
                                                     padding: EdgeInsets.only(bottom: 10),
                                                     
-                                                    child: Text(
-                                                      "\$75 \$90 20% OFF",
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.normal,
-                                                      ),
-                                                    ),
+                                                    child: RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  TextSpan(
+                                                                    text: '\$75 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '\$90 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.grey, // Customize the color as needed
+                                                                      fontSize: 10,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      decoration: TextDecoration.lineThrough,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '20% OFF',
+                                                                    style: TextStyle(
+                                                                      color: Colors.orange, // Customize the color as needed
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
                                                   ),
                                                   Padding(
                                                     padding: EdgeInsets.only(bottom: 50),
@@ -675,10 +777,10 @@ class MyApp extends StatelessWidget {
                                     
 
                                     
-                                      SizedBox(width: 50,),
+                                      SizedBox(width: 40,),
                                        Container(
                                        height: 150,
-                                       width: 30,
+                                       width: 150,
                                        
                                        child: Column(
                                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -687,7 +789,7 @@ class MyApp extends StatelessWidget {
                                                     child: Padding(
                                                       padding: EdgeInsets.only(bottom: 8),
                                                       child: Text(
-                                                        "Nik Sn",
+                                                        "Nike Sky blue & white Sneakers",
                                                         style: TextStyle(
                                                           color: Colors.black,
                                                           fontSize: 14,
@@ -700,14 +802,37 @@ class MyApp extends StatelessWidget {
                                                   Padding(
                                                     padding: EdgeInsets.only(bottom: 10),
                                                     
-                                                    child: Text(
-                                                      "\$1",
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.normal,
-                                                      ),
-                                                    ),
+                                                    child: RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  TextSpan(
+                                                                    text: '\$75 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '\$90 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.grey, // Customize the color as needed
+                                                                      fontSize: 10,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      decoration: TextDecoration.lineThrough,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '20% OFF',
+                                                                    style: TextStyle(
+                                                                      color: Colors.orange, // Customize the color as needed
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
                                                   ),
                                                   Padding(
                                                     padding: EdgeInsets.only(bottom: 50),
@@ -720,7 +845,7 @@ class MyApp extends StatelessWidget {
                                                           ),
                                                           SizedBox(width: 4,),
                                                           Text(
-                                                            "4.",
+                                                            "4.0(124)",
                                                           style: TextStyle(
                                                             color: Colors.black,
                                                             fontSize: 14,
@@ -841,14 +966,37 @@ class MyApp extends StatelessWidget {
                                                       Padding(
                                                         padding: EdgeInsets.only(bottom: 10),
                                                         
-                                                        child: Text(
-                                                          "\$35 \$40.25 15% OFF",
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight.normal,
-                                                          ),
-                                                        ),
+                                                        child: RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  TextSpan(
+                                                                    text: '\$75 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '\$90 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.grey, // Customize the color as needed
+                                                                      fontSize: 10,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      decoration: TextDecoration.lineThrough,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '20% OFF',
+                                                                    style: TextStyle(
+                                                                      color: Colors.orange, // Customize the color as needed
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
                                                       ),
                                                       Padding(
                                                         padding: EdgeInsets.only(bottom: 50),
@@ -904,12 +1052,35 @@ class MyApp extends StatelessWidget {
                                                           Padding(
                                                             padding: EdgeInsets.only(bottom: 10),
                                                             
-                                                            child: Text(
-                                                              "\$52 \$62.4 20% OFF",
-                                                              style: TextStyle(
-                                                                color: Colors.black,
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.normal,
+                                                            child: RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  TextSpan(
+                                                                    text: '\$75 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '\$90 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.grey, // Customize the color as needed
+                                                                      fontSize: 10,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      decoration: TextDecoration.lineThrough,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '20% OFF',
+                                                                    style: TextStyle(
+                                                                      color: Colors.orange, // Customize the color as needed
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
                                                           ),
@@ -942,10 +1113,10 @@ class MyApp extends StatelessWidget {
                                             
                                   
                                             
-                                              SizedBox(width: 50,),
+                                              SizedBox(width: 40,),
                                                Container(
                                                height: 150,
-                                               width: 30,
+                                               width: 150,
                                                
                                                child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -954,7 +1125,7 @@ class MyApp extends StatelessWidget {
                                                             child: Padding(
                                                               padding: EdgeInsets.only(bottom: 8),
                                                               child: Text(
-                                                                "H& co",
+                                                                "H&M half regular fit cotton shirt",
                                                                 style: TextStyle(
                                                                   color: Colors.black,
                                                                   fontSize: 14,
@@ -967,12 +1138,35 @@ class MyApp extends StatelessWidget {
                                                           Padding(
                                                             padding: EdgeInsets.only(bottom: 10),
                                                             
-                                                            child: Text(
-                                                              "\$6",
-                                                              style: TextStyle(
-                                                                color: Colors.black,
-                                                                fontSize: 14,
-                                                                fontWeight: FontWeight.normal,
+                                                            child: RichText(
+                                                              text: TextSpan(
+                                                                children: [
+                                                                  TextSpan(
+                                                                    text: '\$75 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w600,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '\$90 ',
+                                                                    style: TextStyle(
+                                                                      color: Colors.grey, // Customize the color as needed
+                                                                      fontSize: 10,
+                                                                      fontWeight: FontWeight.w500,
+                                                                      decoration: TextDecoration.lineThrough,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: '20% OFF',
+                                                                    style: TextStyle(
+                                                                      color: Colors.orange, // Customize the color as needed
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
                                                           ),
@@ -987,7 +1181,7 @@ class MyApp extends StatelessWidget {
                                                                   ),
                                                                   SizedBox(width: 4,),
                                                                   Text(
-                                                                    "4.",
+                                                                    "4.0 (254)",
                                                                   style: TextStyle(
                                                                     color: Colors.black,
                                                                     fontSize: 14,
@@ -1087,17 +1281,81 @@ class MyApp extends StatelessWidget {
       ],
     ),), 
       
-        drawer: const Drawer(),
+        drawer: Drawer(
+          child: ListView(
+          padding: const EdgeInsets.all(0),
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+               //BoxDecoration
+              child: UserAccountsDrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                accountName: Text(
+                  "Ali Demir",
+                  style: TextStyle(fontSize: 18),
+                ),
+                accountEmail: Text("alidemir200258@gmail.com"),
+                currentAccountPictureSize: Size.square(50),
+                currentAccountPicture: Padding(
+                  padding: EdgeInsets.only(bottom:9.0),
+                  child: CircleAvatar(
+                    backgroundColor: Color.fromARGB(255, 242, 254, 13),
+                    child: Text(
+                      "A",
+                      style: TextStyle(fontSize: 30.0, color: Colors.white),
+                    ), //Text
+                  ),
+                ), //circleAvatar
+              ), //UserAccountDrawerHeader
+            ), //DrawerHeader
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text(' My Profile '),
+              onTap: () {
+               
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.book),
+              title: const Text(' My Course '),
+              onTap: () {
+                
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.workspace_premium),
+              title: const Text(' Go Premium '),
+              onTap: () {
+                
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.video_label),
+              title: const Text(' Saved Videos '),
+              onTap: () {
+                
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.edit),
+              title: const Text(' Edit Profile '),
+              onTap: () {
+                
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('LogOut'),
+              onTap: () {
+                
+              },
+            ),
+          ],
+        ),
+        ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-
-
